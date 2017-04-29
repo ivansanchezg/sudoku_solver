@@ -9,18 +9,7 @@ public class SudokuSolver
 	private static int row, column;
 	private static int length;
 	private static Scanner scanner;
-	/*
-	public SudokuSolver(int[][] matrix)
-	{
-		this.resultMatrix = matrix;
-		length = resultMatrix[0].length;
-		permanentMatrix = new boolean[length][length];
-		buildPermamentMatrix();
-		row = 0;
-		column = 0;		
-	}
-	*/
-
+	
 	//This matrix will tell if a number has been given as part of the sudoku and cannot be modified.
 	private static void buildPermamentMatrix() {
 		for(int i = 0; i < length; i++) {
@@ -163,9 +152,14 @@ public class SudokuSolver
 				}
 			}
 		}
-		
 		printMatrix();
 	}
+
+	/* TO DO
+	public static String solveToJson() {
+		return "{}";
+	}
+	*/
 	
 	private static void nextPosition()
 	{
