@@ -1,7 +1,19 @@
 package com.ivansanchezg.sudokusolver;
 
+import com.google.gson.stream.JsonReader;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
+// TO DO: Validate initial matrix
+// TO DO: Split file into multiple files
 public class SudokuSolver {
     private static int[][] resultMatrix;
     private static boolean[][] permanentMatrix;
@@ -113,8 +125,8 @@ public class SudokuSolver {
 
     private static int[][] buildMatrixFromInput() {
         scanner = new Scanner(System.in);
-        int[][] matrix = new int[9][];
         int gridSize = getGridSizeFromInput();
+        int[][] matrix = new int[gridSize][];
         System.out.println("Insert the sudoku by rows. " +
                 "Empty tiles should be filled with zeros and numbers must be separated by an empty space");
         for (int index = 0; index < gridSize; index++) {
@@ -125,43 +137,116 @@ public class SudokuSolver {
         return matrix;
     }
 
-    // TODO: Return false when not posible to solve
     private static boolean solveSudoku() {
-        //The Sudoku will be solved once it passes through all the rows		
-        while (row < length) {
-            //This value cannot be changed, so we move to the next one
-            if (permanentMatrix[row][column]) {
-                nextPosition();
-            } else {
-                //Get the current value and increase it, if it is greater than the length (default: 9), return to the previous position
-                int value = resultMatrix[row][column];
-                value++;
-                if (value > length) {
-                    resultMatrix[row][column] = 0;
-                    //We return until we find a position a number that is not permanent.
-                    do {
-                        previousPosition();
-                    } while (permanentMatrix[row][column]);
+        try {
+            //The Sudoku will be solved once it passes through all the rows		
+            while (row < length) {
+                //This value cannot be changed, so we move to the next one
+                if (permanentMatrix[row][column]) {
+                    nextPosition();
                 } else {
-                    //Set the value on the current position
-                    resultMatrix[row][column] = value;
-                    //Check if the number doesn't break the Sudoku rules, if they are not broken, store the number and move to the next location
-                    if (checkColumn(value) && checkRow(value) && checkSquare(value)) {
-                        //The value is valid, and because we already store it, we move to the next position
-                        nextPosition();
+                    //Get the current value and increase it, if it is greater than the length (default: 9), return to the previous position
+                    int value = resultMatrix[row][column];
+                    value++;
+                    if (value > length) {
+                        resultMatrix[row][column] = 0;
+                        //We return until we find a position a number that is not permanent.
+                        do {
+                            previousPosition();
+                        } while (permanentMatrix[row][column]);
+                    } else {
+                        //Set the value on the current position
+                        resultMatrix[row][column] = value;
+                        //Check if the number doesn't break the Sudoku rules, if they are not broken, store the number and move to the next location
+                        if (checkColumn(value) && checkRow(value) && checkSquare(value)) {
+                            //The value is valid, and because we already store it, we move to the next position
+                            nextPosition();
+                        }
                     }
                 }
             }
+            printMatrix();
+            return true;
+        } catch (ArrayIndexOutOfBoundsException iob) {
+            return false;
         }
-        printMatrix();
-        return true;
     }
 
-    /* TO DO
-    public static String solveToJson() {
-    	return "{}";
+    public static List<List<Integer>> readJsonFile(String filePath) {
+        InputStream inputStream = null;
+		try {
+			inputStream = new FileInputStream(filePath);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+        }
+        
+        InputStreamReader inputStreamReader = null;
+		try {
+			inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+        }
+        
+        JsonReader jsonReader = new JsonReader(inputStreamReader);
+        List<List<Integer>> columns = new ArrayList<>();
+        try {
+            jsonReader.beginArray();
+            while (jsonReader.hasNext()) {
+                jsonReader.beginArray();
+                List<Integer> row = new ArrayList<>();
+                while (jsonReader.hasNext()) {
+                    row.add(jsonReader.nextInt());
+                }
+                jsonReader.endArray();
+                columns.add(row);
+            }
+            jsonReader.endArray(); 
+            jsonReader.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+
+        return columns;
     }
-    */
+
+    public static int[][] convertListIntoMatrix(List<List<Integer>> columns) {
+        if (columns == null) {
+            return null;
+        }
+        
+        // Check that the column and row length is the same
+        if (columns.size() != columns.get(0).size()) {
+            return null;
+        }
+        
+        int rowSize = columns.get(0).size();
+        int[][] matrix = new int[rowSize][];
+
+        int columnIndex = 0;
+        for (List<Integer> row : columns) {
+            // Check that all rows are the same size
+            if (rowSize != row.size()) {
+                return null;
+            }
+            matrix[columnIndex] = new int[rowSize];
+            int rowIndex = 0;
+            for(int value : row) {
+                matrix[columnIndex][rowIndex] = value;
+                rowIndex++;
+            }
+            columnIndex++;
+        }
+        return matrix;
+    }
+
+    public static boolean solveWithJson(String filePath) {
+        List<List<Integer>> jsonMatrix = readJsonFile(filePath);
+        int[][] matrix = convertListIntoMatrix(jsonMatrix);
+        if (matrix == null) {
+            return false;
+        }
+        return solve(matrix);
+    }
 
     private static void nextPosition() {
         column++;

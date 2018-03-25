@@ -1,5 +1,7 @@
 package org.ivansanchezg.sudokusolver;
 
+import java.io.File;
+
 import com.ivansanchezg.sudokusolver.SudokuSolver;
 
 import junit.framework.Test;
@@ -97,5 +99,29 @@ public class SudokuSolverTest
         
         assertTrue(SudokuSolver.solve(matrix));
     }
+	
+	public void testMatrixWithNoSolution() {
+		
+		int[][] matrix = {
+			{0,0,6,6,0,0,4,0,0},
+			{7,0,0,0,0,3,6,0,0},
+			{0,0,0,0,9,1,0,8,0},
+			{0,0,0,0,0,0,0,0,0},
+			{0,5,0,1,8,0,0,0,3},								
+			{0,0,0,3,0,6,0,4,5},
+			{0,4,0,2,0,0,0,6,0},
+			{9,0,3,0,0,0,0,0,0},
+			{0,2,0,0,0,0,1,0,0}
+		};
+		
+		assertFalse(SudokuSolver.solve(matrix));
+    }
     
+    public void testMatrixWithSolutionUsingJson() {
+
+        String filePath = new File("").getAbsolutePath();
+        filePath = filePath.concat("/src/test/java/org/ivansanchezg/sudokusolver/sudoku.json");
+        assertTrue(SudokuSolver.solveWithJson(filePath));
+
+    }
 }
