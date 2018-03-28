@@ -158,7 +158,9 @@ public class SudokuSolver {
                         //Set the value on the current position
                         resultMatrix[row][column] = value;
                         //Check if the number doesn't break the Sudoku rules, if they are not broken, store the number and move to the next location
-                        if (checkColumn(value) && checkRow(value) && checkSquare(value)) {
+                        if (SudokuValidator.checkColumn(resultMatrix, value, length, row, column) &&
+                            SudokuValidator.checkRow(resultMatrix, value, length, row, column) &&
+                            SudokuValidator.checkSquare(resultMatrix, value, length, row, column)) {
                             //The value is valid, and because we already store it, we move to the next position
                             nextPosition();
                         }
@@ -174,22 +176,13 @@ public class SudokuSolver {
 
     public static List<List<Integer>> readJsonFile(String filePath) {
         InputStream inputStream = null;
-		try {
-			inputStream = new FileInputStream(filePath);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-        }
-        
         InputStreamReader inputStreamReader = null;
-		try {
-			inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
-		} catch (UnsupportedEncodingException e1) {
-			e1.printStackTrace();
-        }
-        
-        JsonReader jsonReader = new JsonReader(inputStreamReader);
+        JsonReader jsonReader = null;
         List<List<Integer>> columns = new ArrayList<>();
         try {
+            inputStream = new FileInputStream(filePath);            
+            inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+            jsonReader = new JsonReader(inputStreamReader);            
             jsonReader.beginArray();
             while (jsonReader.hasNext()) {
                 jsonReader.beginArray();
@@ -200,12 +193,32 @@ public class SudokuSolver {
                 jsonReader.endArray();
                 columns.add(row);
             }
-            jsonReader.endArray(); 
-            jsonReader.close();
+            jsonReader.endArray();
+            
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        } catch (UnsupportedEncodingException e1) {
+            e1.printStackTrace();
         } catch (IOException ioe) {
             ioe.printStackTrace();
+        } finally {
+            try {
+				jsonReader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+            try {
+				inputStreamReader.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+            try {
+				inputStream.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
         }
-
+        
         return columns;
     }
 
@@ -273,46 +286,5 @@ public class SudokuSolver {
         }
     }
 
-    private static boolean checkColumn(int value) {
-        //We iterate through the current column and compare. If the value repeats, it is not valid.
-        for (int i = 0; i < length; i++) {
-            if (resultMatrix[i][column] == value && i != row) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static boolean checkRow(int value) {
-        //We iterate through the current row and compare. If the value repeats, it is not valid.
-        for (int i = 0; i < length; i++) {
-            if (resultMatrix[row][i] == value && i != column) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static boolean checkSquare(int value) {
-        //We get the size of the squares with the square root. 9x9 Sudoku has 3x3 squares, 16x16 Sudoku has 4x4 squares.
-        int squareSize = (int) Math.sqrt(length);
-
-        //Calculate the initial position of the square by dividing the row and column with the size of the square.
-        //Example: If row is 4 and column 8, then the squareStartRow will be 1 and the squareStartColumn will be 2.
-        //Then we multiple that by the size of the square, so we get 3 for squareStartRow and 6 for the SquareStartColumn
-        //And we iterate through the square by adding the square size to the multiplication. So in the example will be
-        //from row 3 to 5 and column 6 to 8
-        int squareStartRow = row / squareSize;
-        int squareStartColumn = column / squareSize;
-
-        for (int i = squareStartRow * squareSize; i < (squareStartRow * squareSize) + squareSize; i++) {
-            for (int j = squareStartColumn * squareSize; j < (squareStartColumn * squareSize) + squareSize; j++) {
-                if (resultMatrix[i][j] == value && i != row && j != column) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
+    
 }

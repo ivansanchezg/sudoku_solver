@@ -1,4 +1,4 @@
-package org.ivansanchezg.sudokusolver;
+package com.ivansanchezg.sudokusolver;
 
 import java.io.File;
 
@@ -11,30 +11,26 @@ import junit.framework.TestSuite;
 /**
  * Unit test for simple App.
  */
-public class SudokuSolverTest 
-    extends TestCase
-{
+public class SudokuSolverTest extends TestCase {
     /**
      * Create the test case
      *
      * @param testName name of the test case
      */
-    public SudokuSolverTest( String testName )
-    {
-        super( testName );
+    public SudokuSolverTest(String testName) {
+        super(testName);
     }
 
     /**
      * @return the suite of tests being tested
      */
-    public static Test suite()
-    {
+    public static Test suite() {
         return new TestSuite( SudokuSolverTest.class );
     }
 
     public void testBlankMatrix() {
 
-        int[][] blankMatrix = {
+        int[][] matrix = {
 			{0,0,0,0,0,0,0,0,0},
 			{0,0,0,0,0,0,0,0,0},
 			{0,0,0,0,0,0,0,0,0},
@@ -46,7 +42,7 @@ public class SudokuSolverTest
 			{0,0,0,0,0,0,0,0,0}
         };
         
-        assertTrue(SudokuSolver.solve(blankMatrix));
+        assertTrue(SudokuSolver.solve(matrix));
     }
 
     public void testMatrixWithSolution1() {
@@ -120,7 +116,7 @@ public class SudokuSolverTest
     public void testMatrixWithSolutionUsingJson() {
 
         String filePath = new File("").getAbsolutePath();
-        filePath = filePath.concat("/src/test/java/org/ivansanchezg/sudokusolver/sudoku.json");
+        filePath = filePath.concat("/src/test/java/com/ivansanchezg/sudokusolver/sudoku.json");
         assertTrue(SudokuSolver.solveWithJson(filePath));
 
     }
