@@ -1,14 +1,5 @@
 package com.ivansanchezg.sudokusolver;
 
-import com.google.gson.stream.JsonReader;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.List;
 
 // TO DO: Validate initial matrix
@@ -96,87 +87,9 @@ public class SudokuSolver {
         }
     }
 
-    public static List<List<Integer>> readJsonFile(String filePath) {
-        InputStream inputStream = null;
-        InputStreamReader inputStreamReader = null;
-        JsonReader jsonReader = null;
-        List<List<Integer>> columns = new ArrayList<>();
-        try {
-            inputStream = new FileInputStream(filePath);            
-            inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
-            jsonReader = new JsonReader(inputStreamReader);            
-            jsonReader.beginArray();
-            while (jsonReader.hasNext()) {
-                jsonReader.beginArray();
-                List<Integer> row = new ArrayList<>();
-                while (jsonReader.hasNext()) {
-                    row.add(jsonReader.nextInt());
-                }
-                jsonReader.endArray();
-                columns.add(row);
-            }
-            jsonReader.endArray();
-            
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
-        } catch (UnsupportedEncodingException e1) {
-            e1.printStackTrace();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        } finally {
-            try {
-				jsonReader.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-            try {
-				inputStreamReader.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-            try {
-				inputStream.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-        }
-        
-        return columns;
-    }
-
-    public static int[][] convertListIntoMatrix(List<List<Integer>> columns) {
-        if (columns == null) {
-            return null;
-        }
-        
-        // Check that the column and row length is the same
-        if (columns.size() != columns.get(0).size()) {
-            return null;
-        }
-        
-        int rowSize = columns.get(0).size();
-        int[][] matrix = new int[rowSize][];
-
-        int columnIndex = 0;
-        for (List<Integer> row : columns) {
-            // Check that all rows are the same size
-            if (rowSize != row.size()) {
-                return null;
-            }
-            matrix[columnIndex] = new int[rowSize];
-            int rowIndex = 0;
-            for(int value : row) {
-                matrix[columnIndex][rowIndex] = value;
-                rowIndex++;
-            }
-            columnIndex++;
-        }
-        return matrix;
-    }
-
     public static boolean solveWithJson(String filePath) {
-        List<List<Integer>> jsonMatrix = readJsonFile(filePath);
-        int[][] matrix = convertListIntoMatrix(jsonMatrix);
+        List<List<Integer>> jsonMatrix = MatrixBuilder.jsonFileToList(filePath);
+        int[][] matrix = MatrixBuilder.convertListIntoMatrix(jsonMatrix);
         if (matrix == null || !isValidMatrix(matrix)) {
             return false;
         }
