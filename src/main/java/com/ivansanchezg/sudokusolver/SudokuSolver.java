@@ -3,7 +3,6 @@ package com.ivansanchezg.sudokusolver;
 import java.util.List;
 
 // TO DO: Validate initial matrix
-// TO DO: Split file into multiple files
 public class SudokuSolver {
     private static int[][] resultMatrix;
     private static boolean[][] permanentMatrix;
@@ -23,10 +22,6 @@ public class SudokuSolver {
         }
     }
 
-    private static boolean isValidMatrix(int[][] matrix) {
-        return true;
-    }
-
     private static void initialize(int[][] matrix) {
         resultMatrix = matrix;
         length = resultMatrix[0].length;
@@ -37,7 +32,7 @@ public class SudokuSolver {
     }
 
     public static boolean solve(int[][] matrix) {
-        if (!isValidMatrix(matrix)) {
+        if (!SudokuValidator.isValidMatrix(matrix)) {
             System.out.println("Invalid matrix, please check your matrix.");
             return false;
         }
@@ -90,7 +85,7 @@ public class SudokuSolver {
     public static boolean solveWithJson(String filePath) {
         List<List<Integer>> jsonMatrix = MatrixBuilder.jsonFileToList(filePath);
         int[][] matrix = MatrixBuilder.convertListIntoMatrix(jsonMatrix);
-        if (matrix == null || !isValidMatrix(matrix)) {
+        if (matrix == null || !SudokuValidator.isValidMatrix(matrix)) {
             return false;
         }
         return solve(matrix);

@@ -45,4 +45,34 @@ public class SudokuValidator {
         return true;
     }
 
+    public static boolean isValidMatrix(int[][] matrix) {
+        if (matrix == null) {
+            return false;
+        }
+        
+        // Validate matrix is N x N
+        int rowLength = matrix[0].length;
+        int columnLength = matrix.length;
+        if (rowLength != columnLength) {
+            return false;
+        }
+        for (int row = 1; row < matrix.length; row++) {
+            if (columnLength != matrix[row].length) {
+                return false;
+            }
+        }
+        
+        // Validate values are between 0 and N
+        int minLimit = 0;
+        int maxLimit = matrix[0].length;
+        for (int row = 0; row < rowLength; row++) {
+            for (int column = 0; column < columnLength; column++) {
+                if (matrix[row][column] < minLimit || matrix[row][column] > maxLimit) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
