@@ -96,7 +96,7 @@ public class MatrixBuilder {
         InputStream inputStream = null;
         InputStreamReader inputStreamReader = null;
         JsonReader jsonReader = null;
-        List<List<Integer>> columns = new ArrayList<>();
+        List<List<Integer>> matrixList = new ArrayList<>();
 
         try {
             inputStream = new FileInputStream(filePath);            
@@ -110,7 +110,7 @@ public class MatrixBuilder {
                     row.add(jsonReader.nextInt());
                 }
                 jsonReader.endArray();
-                columns.add(row);
+                matrixList.add(row);
             }
             jsonReader.endArray();
         } catch (FileNotFoundException fnfe) {
@@ -137,24 +137,24 @@ public class MatrixBuilder {
 			}
         }
         
-        return columns;
+        return matrixList;
     }
 
-    public static int[][] convertListIntoMatrix(List<List<Integer>> columns) {
-        if (columns == null) {
+    public static int[][] convertListIntoMatrix(List<List<Integer>> matrixList) {
+        if (matrixList == null) {
             return null;
         }
         
         // Check that the column and row length is the same
-        if (columns.size() != columns.get(0).size()) {
+        if (matrixList.size() != matrixList.get(0).size()) {
             return null;
         }
         
-        int rowSize = columns.get(0).size();
+        int rowSize = matrixList.get(0).size();
         int[][] matrix = new int[rowSize][];
 
         int columnIndex = 0;
-        for (List<Integer> row : columns) {
+        for (List<Integer> row : matrixList) {
             // Check that all rows are the same size
             if (rowSize != row.size()) {
                 return null;
