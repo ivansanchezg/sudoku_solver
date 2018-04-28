@@ -18,8 +18,10 @@ public class MatrixBuilder {
         Scanner scanner = new Scanner(System.in);
         int gridSize = getGridSizeFromInput(scanner);
         int[][] matrix = new int[gridSize][];
-        System.out.println("Insert the sudoku by rows. " +
-                "Empty tiles should be filled with zeros and numbers must be separated by an empty space");
+        System.out.println(
+            "Insert the sudoku by rows. " +
+            "Empty tiles should be filled with zeros and numbers must be separated by an empty space"
+        );
         for (int index = 0; index < gridSize; index++) {
             System.out.print("Insert row number " + (index + 1) + ": ");
             matrix[index] = getRowFromInput(gridSize, scanner);

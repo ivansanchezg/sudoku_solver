@@ -16,7 +16,7 @@ public class SudokuSolverTest extends TestCase {
     }
 
     public static Test suite() {
-        return new TestSuite( SudokuSolverTest.class );
+        return new TestSuite(SudokuSolverTest.class);
     }
 
     public void testBlankMatrix() {
