@@ -31,7 +31,7 @@ public class SudokuSolverTest extends TestCase {
 			{0,0,0,0,0,0,0,0,0},
 			{0,0,0,0,0,0,0,0,0}
         };
-        assertTrue(SudokuSolver.solve(matrix));
+        assertTrue(SudokuSolver.solve(matrix, false));
     }
 
     public void testMatrixWithSolution1() {
@@ -46,7 +46,7 @@ public class SudokuSolverTest extends TestCase {
 			{0,4,0,0,5,0,0,3,6},
 			{7,0,3,0,1,8,0,0,0}
 		};
-        assertTrue(SudokuSolver.solve(matrix));
+        assertTrue(SudokuSolver.solve(matrix, false));
     }
 
     public void testMatrixWithSolution2() {
@@ -61,7 +61,7 @@ public class SudokuSolverTest extends TestCase {
 			{0,2,0,0,0,0,0,3,7},
 			{8,0,0,5,1,2,0,0,4}
 		};
-        assertTrue(SudokuSolver.solve(matrix));
+        assertTrue(SudokuSolver.solve(matrix, false));
     }
 
     public void testMatrixWithSolution3() {
@@ -76,7 +76,7 @@ public class SudokuSolverTest extends TestCase {
 			{9,0,3,0,0,0,0,0,0},
 			{0,2,0,0,0,0,1,0,0}
 		};
-        assertTrue(SudokuSolver.solve(matrix));
+        assertTrue(SudokuSolver.solve(matrix, false));
     }
 	
 	public void testMatrixWithNoSolution() {
@@ -91,12 +91,12 @@ public class SudokuSolverTest extends TestCase {
 			{9,0,3,0,0,0,0,0,0},
 			{0,2,0,0,0,0,1,0,0}
 		};
-		assertFalse(SudokuSolver.solve(matrix));
+		assertFalse(SudokuSolver.solve(matrix, false));
     }
     
     public void testMatrixWithSolutionUsingJson() {
         String filePath = new File("").getAbsolutePath();
         filePath = filePath.concat("/src/test/java/com/ivansanchezg/sudokusolver/sudoku.json");
-        assertTrue(SudokuSolver.solveWithJson(filePath));
+        assertTrue(SudokuSolver.solveWithJson(filePath, false));
     }
 }

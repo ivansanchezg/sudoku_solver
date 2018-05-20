@@ -31,21 +31,21 @@ public class SudokuSolver {
         column = 0;
     }
 
-    public static boolean solve(int[][] matrix) {
+    public static boolean solve(int[][] matrix, boolean printMatrix) {
         if (!SudokuValidator.isValidMatrix(matrix)) {
             System.out.println("Invalid matrix, please check your matrix.");
             return false;
         }
         initialize(matrix);
-        return solveSudoku();
+        return solveSudoku(printMatrix);
     }
 
-    public static boolean solve() {
+    public static boolean solve(boolean printMatrix) {
         int[][] matrix = MatrixBuilder.buildMatrixFromInput();
-        return solve(matrix);
+        return solve(matrix, printMatrix);
     }
 
-    private static boolean solveSudoku() {
+    private static boolean solveSudoku(boolean printMatrix) {
         try {
             //The Sudoku will be solved once it passes through all the rows		
             while (row < length) {
@@ -75,20 +75,22 @@ public class SudokuSolver {
                     }
                 }
             }
-            printMatrix();
+            if (printMatrix) {
+                printMatrix();
+            }
             return true;
         } catch (ArrayIndexOutOfBoundsException iob) {
             return false;
         }
     }
 
-    public static boolean solveWithJson(String filePath) {
+    public static boolean solveWithJson(String filePath, boolean printMatrix) {
         List<List<Integer>> jsonMatrix = MatrixBuilder.jsonFileToList(filePath);
         int[][] matrix = MatrixBuilder.convertListIntoMatrix(jsonMatrix);
         if (matrix == null || !SudokuValidator.isValidMatrix(matrix)) {
             return false;
         }
-        return solve(matrix);
+        return solve(matrix, printMatrix);
     }
 
     private static void nextPosition() {
